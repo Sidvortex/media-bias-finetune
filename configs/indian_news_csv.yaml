@@ -1,0 +1,29 @@
+# Second-stage fine-tune on your own labelled Indian news sentences.
+# Start from the BABE-tuned XLM-R checkpoint so it already "knows" loaded language.
+#
+# data/train.csv and data/test.csv need two columns: text,label
+# label values must be the strings in `labels` below (or their integer index).
+
+model:
+  name: outputs/xlmr-babe/best     # path to a previous run, or any HF model id
+
+data:
+  source: csv
+  text_column: text
+  label_column: label
+  labels: [neutral, biased]
+  val_fraction: 0.15
+  train_csv: data/train.csv
+  test_csv: data/test.csv
+  max_length: 160
+  seed: 42
+
+train:
+  output_dir: outputs/xlmr-indian-news
+  epochs: 6
+  lr: 1.5e-5
+  batch_size: 16
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  class_weights: true
+  early_stopping_patience: 2

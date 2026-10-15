@@ -1,0 +1,28 @@
+# Sentence-level media bias detection on BABE (Bias Annotations By Experts).
+# Fits a Kaggle T4 comfortably (~10 min per run).
+
+model:
+  name: microsoft/deberta-v3-base
+
+data:
+  source: hf                       # hf | csv
+  dataset: mediabiasgroup/BABE
+  text_column: text
+  label_column: label              # BABE: 0 = neutral, 1 = biased. Use "type" for outlet lean.
+  labels: [neutral, biased]        # index order = integer label value
+  val_fraction: 0.1                # carved out of train (stratified)
+  # csv mode (your own data): set source: csv and point these at files with text,label columns
+  train_csv: data/train.csv
+  test_csv: data/test.csv
+  max_length: 128
+  seed: 42
+
+train:
+  output_dir: outputs/deberta-babe
+  epochs: 4
+  lr: 2.0e-5
+  batch_size: 16
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  class_weights: true              # helps when classes are imbalanced
+  early_stopping_patience: 2

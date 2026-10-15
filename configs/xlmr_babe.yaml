@@ -1,0 +1,27 @@
+# Multilingual variant: same task, XLM-R encoder, so the model can later be
+# fine-tuned further on Hindi / Indian-English news without changing tokenizer.
+
+model:
+  name: FacebookAI/xlm-roberta-base
+
+data:
+  source: hf
+  dataset: mediabiasgroup/BABE
+  text_column: text
+  label_column: label
+  labels: [neutral, biased]
+  val_fraction: 0.1
+  train_csv: data/train.csv
+  test_csv: data/test.csv
+  max_length: 128
+  seed: 42
+
+train:
+  output_dir: outputs/xlmr-babe
+  epochs: 5
+  lr: 2.0e-5
+  batch_size: 16
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  class_weights: true
+  early_stopping_patience: 2
